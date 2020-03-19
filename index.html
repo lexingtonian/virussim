@@ -44,7 +44,13 @@ var traveller = false;
 var populationDensity=25;
 var firstDay = true;
 var maxCycles = 356;
+var sickTravellerPreviouspositionAndStatus = {
+  x: 20,
+  y: 20,
+  condition: 0
+};
 let sickTraveller = [20,20];
+
 
 //populate  two dim array world[][] with people
 function initiateWorld() {
@@ -65,6 +71,9 @@ var i,j,r;
 	}
     world[sickTraveller[0]] [sickTraveller[1]]=sick; 
     kierrostenMaara=0;
+    sickTravellerPreviouspositionAndStatus.x = 20;
+    sickTravellerPreviouspositionAndStatus.y = 20;
+    sickTravellerPreviouspositionAndStatus.condition = empty;
 }
 
 
@@ -75,11 +84,22 @@ function sickTravellerMoves(){
     x=Math.random();
     y=Math.random();
         
+        
+        
+        //set to place of the sick traveler back to original
+        if (sickTravellerPreviouspositionAndStatus.condition==empty) {
+        	world[sickTravellerPreviouspositionAndStatus.x][sickTravellerPreviouspositionAndStatus.y]=empty;
+        };
+        
         if (x<0.33 && sickTraveller[0]>0) sickTraveller[0]=sickTraveller[0]-1;
     	if (x>0.66 && sickTraveller[0]<worldWidth-1) sickTraveller[0]=sickTraveller[0]+1;
 		if (y<0.33 && sickTraveller[1]>0) sickTraveller[1]=sickTraveller[1]-1;
     	if (y>0.66 && sickTraveller[1]<worldHeight-1) sickTraveller[1]=sickTraveller[1]+1;
-    	world[sickTraveller[0]][sickTraveller[1]]=sick;
+        //lets record the original state of the next location for the sick traveller
+        sickTravellerPreviouspositionAndStatus.x = sickTraveller[0];
+    	sickTravellerPreviouspositionAndStatus.y = sickTraveller[1];
+    	sickTravellerPreviouspositionAndStatus.condition = world[sickTraveller[0]][sickTraveller[1]];
+      	world[sickTraveller[0]][sickTraveller[1]]=sick;
 }
 
 
@@ -127,12 +147,10 @@ function runInfectionCycle() {
   			//check everybody in the immediate approximate
             for (a = i-1; a <= i+1; a++) {
             	for (b = j-1; b <= j+1; b++){
-                	if (a>=0 && a<worldWidth && b>=0 && b<worldHeight) {
-                    
+                	if (a>=0 && a<worldWidth && b>=0 && b<worldHeight) {                    
                     //next compare neighbor to see if there is a contamination
                     	if ((tempWorld[a][b]==sick) && (world[i][j]==healthy)) {
-                        	world[i][j]=sick;                            
-                            //kierrostenMaara++;
+                        	world[i][j]=sick;                                                      
                         }
                     }
                 }
