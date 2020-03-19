@@ -1,8 +1,10 @@
-<b>Virus spread demo</b>
+
+  
+  <b>Virus spread demo</b>
 
 <br><br><br>
 <label>A sick guy walks around
-	 <input type="checkbox" id="sickGuySelected"  checked=true>
+	 <input type="checkbox" id="sickGuySelected" checked=true>
   
 </label><br>
 
@@ -38,7 +40,7 @@ var worldHeight=40;
 var empty=0;
 var healthy=1;
 var sick=2;
-var unknownCondition=3;
+var patientOne=3;
 var world = new Array(worldWidth).fill(empty).map(()=>new Array(worldHeight).fill(empty));
 var traveller = false;
 var populationDensity=25;
@@ -84,8 +86,6 @@ function sickTravellerMoves(){
     x=Math.random();
     y=Math.random();
         
-        
-        
         //set to place of the sick traveler back to original
         if (sickTravellerPreviouspositionAndStatus.condition==empty) {
         	world[sickTravellerPreviouspositionAndStatus.x][sickTravellerPreviouspositionAndStatus.y]=empty;
@@ -112,7 +112,7 @@ function drawTarget(x,y,status) {
   	case healthy:
     		ctx.fillStyle = "#98FB98";
     	break;
-    case unknownCondition:
+    case patientOne:
     		ctx.fillStyle = "#000000";
             kierrostenMaara=999;
     	break;
@@ -177,6 +177,9 @@ function kierros()
 	runInfectionCycle();
     if (traveller) sickTravellerMoves()
 	drawWorld();
+   	if (traveller) {
+    	drawTarget(sickTraveller[0],sickTraveller[1],patientOne);
+    }
     kierrostenMaara++;
     document.getElementById("p1").innerHTML = kierrostenMaara;
 }
@@ -194,8 +197,7 @@ function resetAndStartOver()
 {
 	firstDay=true;
     initiateWorld();
-	drawWorld();
-    //kierros();
+    drawWorld();
 }
 
 
