@@ -6,12 +6,18 @@
   
 </label><br>
 
-<label>Population density
+<label>Population density:
   <input type="text" id="density" value="25"> % <br>
-</label><br>
+</label>
 
-<button onclick="setTimeout(kierros, 30)"><b>Press me to add 24 hours</b></button> 
-<button onclick="setTimeout(resetAndStartOver, 30)">Reset and start over</button> 
+Days elapsed: 
+<label id="p1">none</label>
+<br>
+<br>
+
+<button onclick="setTimeout(kierros, 3)"><b>Press me to add 24 hours</b></button> 
+<button onclick="setTimeout(automaatti, 3)"><b>Press me and run a year</b></button> <br><br>
+<button onclick="setTimeout(resetAndStartOver, 3)">Reset and start over</button> 
 <br><br>
 
 <canvas id="myCanvas" width="440" height="440" style="border:1px solid #000000;">
@@ -37,10 +43,8 @@ var world = new Array(worldWidth).fill(empty).map(()=>new Array(worldHeight).fil
 var traveller = false;
 var populationDensity=25;
 var firstDay = true;
+var maxCycles = 356;
 let sickTraveller = [20,20];
-
-
-
 
 //populate  two dim array world[][] with people
 function initiateWorld() {
@@ -51,7 +55,7 @@ var i,j,r;
  			world[i][j]=empty;
 		}	
 	}
-
+    
  	populationDensity = document.getElementById("density").value;
 	for (i = 0; i < worldWidth; i++) {
     	for (j = 0; j < worldHeight; j++) {
@@ -59,8 +63,10 @@ var i,j,r;
            	if (r<populationDensity) world[i][j]=healthy;
 		}	
 	}
-    world[sickTraveller[0]] [sickTraveller[1]]=sick;   
+    world[sickTraveller[0]] [sickTraveller[1]]=sick; 
+    kierrostenMaara=0;
 }
+
 
 function sickTravellerMoves(){
 	var sideways=0;
@@ -68,13 +74,12 @@ function sickTravellerMoves(){
     var x; var y;
     x=Math.random();
     y=Math.random();
-   
-  	  	if (x<0.33 && sickTraveller[0]>0) sickTraveller[0]=sickTraveller[0]-1;
-    	if (x>0.66 && sickTraveller[0]<worldWidth) sickTraveller[0]=sickTraveller[0]+1;
+        
+        if (x<0.33 && sickTraveller[0]>0) sickTraveller[0]=sickTraveller[0]-1;
+    	if (x>0.66 && sickTraveller[0]<worldWidth-1) sickTraveller[0]=sickTraveller[0]+1;
 		if (y<0.33 && sickTraveller[1]>0) sickTraveller[1]=sickTraveller[1]-1;
-    	if (y>0.66 && sickTraveller[1]<worldHeight) sickTraveller[1]=sickTraveller[1]+1;
+    	if (y>0.66 && sickTraveller[1]<worldHeight-1) sickTraveller[1]=sickTraveller[1]+1;
     	world[sickTraveller[0]][sickTraveller[1]]=sick;
-    
 }
 
 
@@ -142,8 +147,6 @@ function kierros()
 	if (firstDay) {
     	initiateWorld();
 		drawWorld();
-       
-     
          //document.write(traveller);
          firstDay=false;
     };
@@ -156,6 +159,17 @@ function kierros()
 	runInfectionCycle();
     if (traveller) sickTravellerMoves()
 	drawWorld();
+    kierrostenMaara++;
+    document.getElementById("p1").innerHTML = kierrostenMaara;
+}
+
+function automaatti()
+{
+	var i;
+    for (i = 0; i < maxCycles; i++) {
+        setTimeout( kierros, 30);
+	}
+
 }
 
 function resetAndStartOver()
@@ -168,4 +182,5 @@ function resetAndStartOver()
 
 
 </script>
+  
   
